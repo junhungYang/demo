@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        margin:0;
+        padding:0
+    }
+    .wrapper{
+        height:400px;
+        width:300px;
+        border:1px solid black;
+        margin:80px auto;
+        padding:30px;
+        position: relative;
+    }
+    .redBox{
+        height:30px;
+        width:40px;
+        background-color: red;
+        position: absolute;
+    }
+</style>
+<body>
+    <div class="wrapper"></div>
+    <script src="jquery.js"></script>
+    <script>
+        setInterval(function(){
+            var oDiv = $('<div class="redBox"></div>');
+            var num = parseInt(Math.random()*40) - 20 
+            oDiv.css({
+                'top': parseInt(-Math.random()*80) + 'px',
+                'left': parseInt(Math.random()*300) + 'px',
+                'z-index':'10',
+                'transform': 'rotate(' + num + 'deg)'
+            }).appendTo($('.wrapper'))
+            down(oDiv);
+        },Math.random()*200+200)
+
+        function down(div){
+            div.animate({top:'450px'},3000,function(){
+                if(parseInt(div.css('top')) >= 400){
+                    console.log(1)
+                    $(this).remove()
+                }
+            })
+        }
+        function getMath(min,max){
+            return Math.random()*(max-min) + min;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.page {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: (-50%, -50%);
+    /* border: 1px solid red; */
+}
+
+a,
+span {
+    display: inline-block;
+    color: #428bca;
+    margin: 0 3px;
+}
+
+a {
+    height: 20px;
+    line-height: 20px;
+    border: 1px solid #adadad;
+    padding: 5px 8px;
+    border-radius: 6px;
+}
+
+a:hover {
+    border: 1px solid #428bca
+}
+
+.current {
+    height: 20px;
+    line-height: 20px;
+    border: 1px solid #428bca;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: #428bca;
+    color: #fff;
+    cursor: pointer;
+}

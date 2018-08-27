@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>放大镜</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        .wrapper{
+            height:500px;
+            width:500px;
+            border:1px solid black;
+            position: relative;
+            margin:20px;
+        }
+        .imgCont{
+            height:100%;
+            width:100%;
+        }
+        .img{
+            height:100%;
+            width:100%;
+            background:url('./4.jpg') 0% 0% no-repeat;
+            background-size: 500px 500px
+        }
+        .moveBox{
+            position: absolute;
+            cursor: move;
+            background-color: #eee;
+            opacity: 0.3;
+            z-index: 999;
+        }
+        .bigImg{
+            position: absolute;
+            top:0;
+            left:105%;
+            border:1px solid black;
+            height:500px;
+            width:500px;
+            display:none;
+            overflow:hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="imgCont">
+            <div class="img"></div>
+            <div class="moveBox"></div>
+        </div>
+        <div class="bigImg">
+            <img src="4.jpg" alt="">
+        </div>
+    </div>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script>
+        var wrapper = $('.wrapper');
+        var img = $('.imgCont');
+        var moveView = $('.moveBox');
+        var bigImg = $('.bigImg')
+        var w, h
+        function bindEvent(){
+            img.on('mousemove',function(e){
+                move(e,2)
+            }).on('mouseleave',function(){
+                moveView.hide();
+                bigImg.hide()
+            })
+        }
+        function move(event,mul){
+            w = 500 / mul;
+            h = 500 / mul;
+            var maxL = 500 - w;
+            var maxT = 500 - h;
+            var minL = 0;
+            var minT = 0;
+            var X = event.clientX - wrapper.offset().left - w/2;
+            var Y = event.clientY - wrapper.offset().top - h/2;
+            var endL = (X > minL)?(X < maxL)? X : maxL:minL;
+            var endT = (Y > minT)?(Y < maxT)? Y : maxT:minT;
+
+            // 限定moveBox不能超出imgCont区域
+            // 背景：我们把mousemove事件设置于id为img的div上，也就是说鼠标的定位将是基于id为img的div进行的定位
+            // 当moveBox其中一边与div的其中一边重合时，它不可以超出div
+            // 就视角而言此时的方块被固定在一个地方，我们可能会第一个想到的是mousemove事件被取消(鼠标移出div后mousemove事件将自动取消)
+            // 但我们可以换一个角度去思考这个问题，即mousemove事件依然生效，但当moveBox的定位满足特定的情况时，
+            // 我们使它在该情况下被拖拽时的left与top也就是定位始终恒定。直至它重新逃出该情况时
+            // 
+            moveView.css({
+                'height': h +'px',
+                'width':w + 'px',
+                'display':'block',
+                'left':endL + 'px',
+                'top':endT + 'PX',
+            });
+            bigImg.css({
+                'display':'block',
+                
+            }).find('img').css({
+                'width':mul*500 + 'px',
+                'height':mul*500 +'px',
+                'margin-left': -endL *mul,
+                'margin-top': -endT* mul,
+            })
+
+        }
+        bindEvent();
+
+        // 可移动小框不能设为固定宽高的原因
+        // 假设我们设置为固定宽高250，250，并且放大框区域以放大两倍的效果展现出来
+        // 可移动小框位置不变
+        // 当我们把倍数调为3时，放大框内的图片放大为3倍，但放大框的宽高恒定，那么意味着可展示的内容区域减少，
+        // 而在放大框中我们觉得理应展示出来的超出的内容区域却包含在移动小框内，
+        // 所以这是首先可移动小框不能设为固定宽高的原因(除非放大倍数是不可变的)
+
+        // 那么在可更改放大倍数的情况下，该如何设置可移动小框的宽高呢？
+        // 我们可以将错就错，根据以上情况，在放大框中理应展示出来的超出的内容区域却包含在移动小框内
+        // 那么我们只需要将这我们认为理应展示出来的变得不理应便可以了
+        // 如何让它变得不理应呢？
+        // 只要我们将超出的内容不包含于移动小框内便可以,
+        // 那么该如何让它不包含于移动小框内呢？ 改变小框的宽高使理应展示出来的区域排除于小框外
+        // 也就是说我们必要让移动小框缩小至其展示内容与放大框内的此时的展示内容一样
+        // 这里我们抛开框架的宽高去思考该问题
+        // 放大框内的展示内容是我们把宽高放大3倍后的展示内容，所以我们用移动框圈起来的内容就应该是把宽高缩小3倍后的内容
+        // 而此时放大框的展示内容的宽高为500，500，而倍数为mul,所以移动筐圈起来的内容的宽高就应该是 500/mul,500/mul，
+        // 该内容既然是被圈起来的那么圈它的移动筐的宽高就必然是500/mul,500/mul了
+    </script>
+</body>
+</html>
